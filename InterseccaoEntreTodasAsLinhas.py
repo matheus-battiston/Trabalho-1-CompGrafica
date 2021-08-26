@@ -14,7 +14,7 @@ from Ponto import Ponto
 from Linha import Linha
 import time
 
-N_LINHAS = 50
+N_LINHAS = 300
 MAX_X = 100
 
 ContadorInt = 0
@@ -71,7 +71,7 @@ def reshape(w: int, h: int):
 # int, valor do parâmetro no ponto de interseção (sobre a reta MN)       */
 #                                                                        */
 # ********************************************************************** */
-def intersec2d(k: Ponto, l: Ponto, m: Ponto, n: Ponto) -> (int, float, float):
+def intersec2d(k: Ponto, l: Ponto, m: Ponto, n: Ponto):
     det = (n.x - m.x) * (l.y - k.y)  -  (n.y - m.y) * (l.x - k.x)
 
     if (det == 0.0):
@@ -113,6 +113,14 @@ def DesenhaLinhas():
 # Desenha o cenario
 #
 # **********************************************************************
+def colisao_envelope(linha1,linha2):
+    if (abs(linha1.centrox - linha2.centrox) > linha1.meia_largx + linha2.meia_largx):
+        return False
+    elif abs(linha1.centroy - linha2.centroy) > linha1.meia_largy + linha2.meia_largy:
+        return False
+
+    return True 
+    
 def DesenhaCenario():
     global ContChamadas, ContadorInt
 
@@ -131,12 +139,13 @@ def DesenhaCenario():
             PC.set(linhas[j].x1, linhas[j].y1)
             PD.set(linhas[j].x2, linhas[j].y2)
 
-            ContChamadas += 1
-
-            if HaInterseccao(PA, PB, PC, PD):
-                ContadorInt += 1
-                linhas[i].desenhaLinha()
-                linhas[j].desenhaLinha()
+                
+            if colisao_envelope(linhas[i],linhas[j]):
+                ContChamadas += 1
+                if HaInterseccao(PA, PB, PC, PD):
+                    ContadorInt += 1
+                    linhas[i].desenhaLinha()
+                    linhas[j].desenhaLinha()
             
 
 # **********************************************************************

@@ -23,6 +23,8 @@ Subdivisoes = 2
 
 linhas = []
 Lista_Faixas = []
+Lista = []
+ListaFinal = []
 # **********************************************************************
 #  init()
 #  Inicializa os parâmetros globais de OpenGL
@@ -128,11 +130,54 @@ def colisao_envelope(linha1,linha2):
 def cria_subdivisão(nro_divisoes):
 
     global Lista_Faixas
+    global Lista
     tamanho_faixas = 100/nro_divisoes
     Lista_Faixas = []
+    Lista = []
+    global ListaFinal
+    ListaFinal=[]
+    for x in range (0,nro_divisoes):
+        ListaFinal.append([])
+        for y in range (0,nro_divisoes):
+            ListaFinal[x].append([])
+            
     for x in range (0,nro_divisoes):
         Lista_Faixas.append([])
+    for x in range (0,nro_divisoes):
+        Lista.append([])
+#Vertical
+    
+    for x in range(0,len(linhas)):
+        minimo = linhas[x].miny
+        maximo = linhas[x].maxy
 
+        #Programa está gerando linhas fora do plano, isso garante que a estrutura ignore partes de fora
+        if linhas[x].miny < 0:
+            minimo = 0
+        if linhas[x].maxy > 100:
+            maximo = 100
+
+
+        faixa = int(minimo // tamanho_faixas)
+        #Garante que uma linha que va até o limite do plano nao seja colocada na faixa "de fora"
+        if faixa == nro_divisoes:
+            Lista[faixa-1].append(x)
+        else:
+            Lista[faixa].append(x)
+
+        faixa2 = int(maximo // tamanho_faixas)
+
+        if faixa2 != faixa and faixa2 == nro_divisoes:
+            Lista[faixa2-1].append(x)
+        elif faixa2 != faixa:
+            Lista[faixa2].append(x)
+
+        #Cobrir faixas intermediarias
+        if faixa2 - faixa > 1:
+            for z in range(faixa+1,faixa2):
+                Lista[z].append(x)
+    
+#Horizontal
 
     for x in range(0,len(linhas)):
         minimo = linhas[x].minx
@@ -163,7 +208,13 @@ def cria_subdivisão(nro_divisoes):
         if faixa2 - faixa > 1:
             for z in range(faixa+1,faixa2):
                 Lista_Faixas[z].append(x)
-    
+
+    for x in range (0,nro_divisoes):
+        for y in range (0,nro_divisoes):
+            ListaFinal[x][y] = list(set(Lista_Faixas[x]) & set(Lista[y]))
+        
+
+
 def DesenhaCenario():
     global ContChamadas, ContadorInt
 
@@ -174,18 +225,19 @@ def DesenhaCenario():
     glLineWidth(1)
     glColor3f(1,0,0)
     
-    for x in Lista_Faixas:
+    for x in ListaFinal:
         for y in x:
-            PA.set(linhas[y].x1, linhas[y].y1)
-            PB.set(linhas[y].x2, linhas[y].y2)
-            for z in x:
-                PC.set(linhas[z].x1, linhas[z].y1)
-                PD.set(linhas[z].x2, linhas[z].y2)
-                ContChamadas += 1
-                if HaInterseccao(PA, PB, PC, PD):
-                    ContadorInt += 1
-                    linhas[y].desenhaLinha()
-                    linhas[z].desenhaLinha()
+            for z in y:
+                PA.set(linhas[z].x1, linhas[z].y1)
+                PB.set(linhas[z].x2, linhas[z].y2)
+                for a in y:
+                    PC.set(linhas[a].x1, linhas[a].y1)
+                    PD.set(linhas[a].x2, linhas[a].y2)
+                    ContChamadas += 1
+                    if HaInterseccao(PA, PB, PC, PD):
+                        ContadorInt += 1
+                        linhas[z].desenhaLinha()
+                        linhas[a].desenhaLinha()
     """   
     for i in range(N_LINHAS):
         PA.set(linhas[i].x1, linhas[i].y1)

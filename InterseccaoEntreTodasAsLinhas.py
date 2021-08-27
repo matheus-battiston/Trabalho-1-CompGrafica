@@ -254,6 +254,7 @@ def animate():
         
         print(f'Contador de Intersecoes Existentes: {ContadorInt/2.0}')
         print(f'Contador de Chamadas: {ContChamadas}')
+        print( f'Subdivisões', Subdivisoes)
 
 # **********************************************************************
 #  keyboard ( key: int, x: int, y: int )
@@ -282,11 +283,17 @@ def keyboard(*args):
 def arrow_keys(a_keys: int, x: int, y: int):
     global Subdivisoes
     if a_keys == GLUT_KEY_UP:         # Se pressionar UP
-        Subdivisoes += 1
-        cria_subdivisão(Subdivisoes)
+        if Subdivisoes < 50:
+            Subdivisoes += 1
+            cria_subdivisão(Subdivisoes)
+        else:
+            pass
     if a_keys == GLUT_KEY_DOWN:       # Se pressionar DOWN
-        Subdivisoes -= 1
-        cria_subdivisão(Subdivisoes)
+        if Subdivisoes > 2:
+            Subdivisoes -= 1
+            cria_subdivisão(Subdivisoes)
+        else :
+            pass
     if a_keys == GLUT_KEY_LEFT:       # Se pressionar LEFT
         pass
     if a_keys == GLUT_KEY_RIGHT:      # Se pressionar RIGHT

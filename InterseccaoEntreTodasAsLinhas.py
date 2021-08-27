@@ -14,7 +14,7 @@ from Ponto import Ponto
 from Linha import Linha
 import time
 
-N_LINHAS = 300
+N_LINHAS = 100
 MAX_X = 100
 
 ContadorInt = 0
@@ -22,8 +22,8 @@ ContChamadas = 0
 Subdivisoes = 2
 
 linhas = []
-Lista_Faixas = []
-Lista = []
+Lista_Faixas_X = []
+Lista_Faixas_Y = []
 ListaFinal = []
 # **********************************************************************
 #  init()
@@ -31,7 +31,7 @@ ListaFinal = []
 #/ **********************************************************************
 def init():
     global linhas
-    global Lista_Faixas
+    global Lista_Faixas_X
     global Subdivisoes
     # Define a cor do fundo da tela (BRANCO) 
     glClearColor(1.0, 1.0, 1.0, 1.0)
@@ -129,22 +129,24 @@ def colisao_envelope(linha1,linha2):
 
 def cria_subdivisão(nro_divisoes):
 
-    global Lista_Faixas
-    global Lista
-    tamanho_faixas = 100/nro_divisoes
-    Lista_Faixas = []
-    Lista = []
+    global Lista_Faixas_X
+    global Lista_Faixas_Y
+    tamanho_faixas = MAX_X/nro_divisoes
+    Lista_Faixas_X = []
+    Lista_Faixas_Y = []
     global ListaFinal
     ListaFinal=[]
+
+
     for x in range (0,nro_divisoes):
         ListaFinal.append([])
         for y in range (0,nro_divisoes):
             ListaFinal[x].append([])
             
     for x in range (0,nro_divisoes):
-        Lista_Faixas.append([])
+        Lista_Faixas_X.append([])
     for x in range (0,nro_divisoes):
-        Lista.append([])
+        Lista_Faixas_Y.append([])
 #Vertical
     
     for x in range(0,len(linhas)):
@@ -154,28 +156,28 @@ def cria_subdivisão(nro_divisoes):
         #Programa está gerando linhas fora do plano, isso garante que a estrutura ignore partes de fora
         if linhas[x].miny < 0:
             minimo = 0
-        if linhas[x].maxy > 100:
-            maximo = 100
+        if linhas[x].maxy > MAX_X:
+            maximo = MAX_X
 
 
         faixa = int(minimo // tamanho_faixas)
         #Garante que uma linha que va até o limite do plano nao seja colocada na faixa "de fora"
         if faixa == nro_divisoes:
-            Lista[faixa-1].append(x)
+            Lista_Faixas_Y[faixa-1].append(x)
         else:
-            Lista[faixa].append(x)
+            Lista_Faixas_Y[faixa].append(x)
 
         faixa2 = int(maximo // tamanho_faixas)
 
         if faixa2 != faixa and faixa2 == nro_divisoes:
-            Lista[faixa2-1].append(x)
+            Lista_Faixas_Y[faixa2-1].append(x)
         elif faixa2 != faixa:
-            Lista[faixa2].append(x)
+            Lista_Faixas_Y[faixa2].append(x)
 
         #Cobrir faixas intermediarias
         if faixa2 - faixa > 1:
             for z in range(faixa+1,faixa2):
-                Lista[z].append(x)
+                Lista_Faixas_Y[z].append(x)
     
 #Horizontal
 
@@ -186,32 +188,32 @@ def cria_subdivisão(nro_divisoes):
         #Programa está gerando linhas fora do plano, isso garante que a estrutura ignore partes de fora
         if linhas[x].minx < 0:
             minimo = 0
-        if linhas[x].maxx > 100:
-            maximo = 100
+        if linhas[x].maxx > MAX_X:
+            maximo = MAX_X
 
 
         faixa = int(minimo // tamanho_faixas)
         #Garante que uma linha que va até o limite do plano nao seja colocada na faixa "de fora"
         if faixa == nro_divisoes:
-            Lista_Faixas[faixa-1].append(x)
+            Lista_Faixas_X[faixa-1].append(x)
         else:
-            Lista_Faixas[faixa].append(x)
+            Lista_Faixas_X[faixa].append(x)
 
         faixa2 = int(maximo // tamanho_faixas)
 
         if faixa2 != faixa and faixa2 == nro_divisoes:
-            Lista_Faixas[faixa2-1].append(x)
+            Lista_Faixas_X[faixa2-1].append(x)
         elif faixa2 != faixa:
-            Lista_Faixas[faixa2].append(x)
+            Lista_Faixas_X[faixa2].append(x)
 
         #Cobrir faixas intermediarias
         if faixa2 - faixa > 1:
             for z in range(faixa+1,faixa2):
-                Lista_Faixas[z].append(x)
+                Lista_Faixas_X[z].append(x)
 
     for x in range (0,nro_divisoes):
         for y in range (0,nro_divisoes):
-            ListaFinal[x][y] = list(set(Lista_Faixas[x]) & set(Lista[y]))
+            ListaFinal[x][y] = list(set(Lista_Faixas_X[x]) & set(Lista_Faixas_Y[y]))
         
 
 

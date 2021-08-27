@@ -19,9 +19,10 @@ MAX_X = 100
 
 ContadorInt = 0
 ContChamadas = 0
+Subdivisoes = 2
 
 linhas = []
-
+Lista_Faixas = []
 # **********************************************************************
 #  init()
 #  Inicializa os parâmetros globais de OpenGL
@@ -29,7 +30,7 @@ linhas = []
 def init():
     global linhas
     global Lista_Faixas
-    Lista_Faixas = []
+    global Subdivisoes
     # Define a cor do fundo da tela (BRANCO) 
     glClearColor(1.0, 1.0, 1.0, 1.0)
     
@@ -37,8 +38,8 @@ def init():
 
     for linha in linhas:
         linha.geraLinha(MAX_X, 10)
-
-    cria_subdivisão(3)
+    
+    cria_subdivisão(Subdivisoes)
     
 # **********************************************************************
 #  reshape( w: int, h: int )
@@ -125,17 +126,18 @@ def colisao_envelope(linha1,linha2):
     return True 
 
 def cria_subdivisão(nro_divisoes):
-    
+
     global Lista_Faixas
     tamanho_faixas = 100/nro_divisoes
+    Lista_Faixas = []
     for x in range (0,nro_divisoes):
         Lista_Faixas.append([])
-        
+
 
     for x in range(0,len(linhas)):
         minimo = linhas[x].minx
         maximo = linhas[x].maxx
-        
+
         #Programa está gerando linhas fora do plano, isso garante que a estrutura ignore partes de fora
         if linhas[x].minx < 0:
             minimo = 0
@@ -151,17 +153,16 @@ def cria_subdivisão(nro_divisoes):
             Lista_Faixas[faixa].append(x)
 
         faixa2 = int(maximo // tamanho_faixas)
-        
+
         if faixa2 != faixa and faixa2 == nro_divisoes:
             Lista_Faixas[faixa2-1].append(x)
         elif faixa2 != faixa:
             Lista_Faixas[faixa2].append(x)
-        
+
         #Cobrir faixas intermediarias
         if faixa2 - faixa > 1:
             for z in range(faixa+1,faixa2):
                 Lista_Faixas[z].append(x)
-
     
 def DesenhaCenario():
     global ContChamadas, ContadorInt
@@ -180,15 +181,26 @@ def DesenhaCenario():
             for z in x:
                 PC.set(linhas[z].x1, linhas[z].y1)
                 PD.set(linhas[z].x2, linhas[z].y2)
-
                 ContChamadas += 1
                 if HaInterseccao(PA, PB, PC, PD):
                     ContadorInt += 1
                     linhas[y].desenhaLinha()
                     linhas[z].desenhaLinha()
-                
-   
+    """   
+    for i in range(N_LINHAS):
+        PA.set(linhas[i].x1, linhas[i].y1)
+        PB.set(linhas[i].x2, linhas[i].y2)
+        for j in range(N_LINHAS):
+            PC.set(linhas[j].x1, linhas[j].y1)
+            PD.set(linhas[j].x2, linhas[j].y2)
 
+            if colisao_envelope(linhas[i],linhas[j]):
+                ContChamadas += 1
+                if HaInterseccao(PA, PB, PC, PD):
+                    ContadorInt += 1
+                    linhas[i].desenhaLinha()
+                    linhas[j].desenhaLinha()
+"""
 # **********************************************************************
 # display()
 # Funcao que exibe os desenhos na tela
@@ -268,10 +280,13 @@ def keyboard(*args):
 # **********************************************************************
 
 def arrow_keys(a_keys: int, x: int, y: int):
+    global Subdivisoes
     if a_keys == GLUT_KEY_UP:         # Se pressionar UP
-        pass
+        Subdivisoes += 1
+        cria_subdivisão(Subdivisoes)
     if a_keys == GLUT_KEY_DOWN:       # Se pressionar DOWN
-        pass
+        Subdivisoes -= 1
+        cria_subdivisão(Subdivisoes)
     if a_keys == GLUT_KEY_LEFT:       # Se pressionar LEFT
         pass
     if a_keys == GLUT_KEY_RIGHT:      # Se pressionar RIGHT

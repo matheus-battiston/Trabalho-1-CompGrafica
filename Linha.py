@@ -50,7 +50,7 @@ class Linha:
         self.maxx = max(self.x1, self.x2)
         self.minx = min (self.x1, self.x2)
         self.maxy = max (self.y1, self.y2)
-        self.min = min(self.y1,self.y2)
+        self.miny = min(self.y1,self.y2)
         self.centrox = (self.maxx + self.minx)/2
         self.centroy = (self.maxy + self.miny)/2
         self.meia_largx = (self.maxx - self.minx)/2

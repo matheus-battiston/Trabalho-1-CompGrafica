@@ -1,12 +1,4 @@
-# **********************************************************************
-# PUCRS/FACIN
-# COMPUTAÇÃO GRÁFICA
-#
-# Teste de colisão em OpenGL
-#       
-# Marcio Sarroglia Pinho
-# pinho@inf.pucrs.br
-# **********************************************************************
+
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -26,16 +18,13 @@ linhas = []
 Lista_Faixas_X = []
 Lista_Faixas_Y = []
 ListaFinal = []
-test = Celula(Subdivisoes,MAX_X)
-# **********************************************************************
-#  init()
-#  Inicializa os parâmetros globais de OpenGL
-#/ **********************************************************************
+Cel = Celula(Subdivisoes,MAX_X)
+
 def init():
     global linhas
     global Lista_Faixas_X
     global Subdivisoes
-    global test
+    global Cel
     # Define a cor do fundo da tela (BRANCO) 
     glClearColor(1.0, 1.0, 1.0, 1.0)
     
@@ -44,7 +33,7 @@ def init():
     for linha in linhas:
         linha.geraLinha(MAX_X, 10)
     
-    test.cadastraLinha(linhas)
+    Cel.cadastraLinha(linhas)
     cria_subdivisão(Subdivisoes)
     
 # **********************************************************************
@@ -151,7 +140,7 @@ def cria_subdivisão(nro_divisoes):
         Lista_Faixas_X.append([])
     for x in range (0,nro_divisoes):
         Lista_Faixas_Y.append([])
-#Vertical
+#Faixa Vertical
     
     for x in range(0,len(linhas)):
         minimo = linhas[x].miny
@@ -183,7 +172,7 @@ def cria_subdivisão(nro_divisoes):
             for z in range(faixa+1,faixa2):
                 Lista_Faixas_Y[z].append(x)
     
-#Horizontal
+#Faixa Horizontal
 
     for x in range(0,len(linhas)):
         minimo = linhas[x].minx
@@ -215,6 +204,7 @@ def cria_subdivisão(nro_divisoes):
             for z in range(faixa+1,faixa2):
                 Lista_Faixas_X[z].append(x)
 
+    #Junta as duas faixas (horizontal e vertical), formando a final.
     for x in range (0,nro_divisoes):
         for y in range (0,nro_divisoes):
             ListaFinal[x][y] = list(set(Lista_Faixas_X[x]) & set(Lista_Faixas_Y[y]))
@@ -232,7 +222,7 @@ def DesenhaCenario():
     glColor3f(1,0,0)
 
     #Celula com classe
-    """for x in test.ListaDeInteiros:
+    """for x in Cel.ListaDeInteiros:
         for z in x:
             for i in z:
                 PA.set(linhas[i].x1, linhas[i].y1)
@@ -246,7 +236,7 @@ def DesenhaCenario():
                         linhas[i].desenhaLinha()
                         linhas[a].desenhaLinha()"""
     
-    #Versão sem classe
+    #Versão sem classe que fiz antes
     """for x in ListaFinal:
         for y in x:
             for z in y:

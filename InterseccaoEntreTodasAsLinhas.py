@@ -12,6 +12,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from Ponto import Ponto
 from Linha import Linha
+from Celula import Celula
 import time
 
 N_LINHAS = 100
@@ -19,12 +20,13 @@ MAX_X = 100
 
 ContadorInt = 0
 ContChamadas = 0
-Subdivisoes = 2
+Subdivisoes = 20
 
 linhas = []
 Lista_Faixas_X = []
 Lista_Faixas_Y = []
 ListaFinal = []
+test = Celula(Subdivisoes,MAX_X)
 # **********************************************************************
 #  init()
 #  Inicializa os parâmetros globais de OpenGL
@@ -33,6 +35,7 @@ def init():
     global linhas
     global Lista_Faixas_X
     global Subdivisoes
+    global test
     # Define a cor do fundo da tela (BRANCO) 
     glClearColor(1.0, 1.0, 1.0, 1.0)
     
@@ -41,6 +44,7 @@ def init():
     for linha in linhas:
         linha.geraLinha(MAX_X, 10)
     
+    test.cadastraLinha(linhas)
     cria_subdivisão(Subdivisoes)
     
 # **********************************************************************
@@ -226,8 +230,24 @@ def DesenhaCenario():
     # Desenha as linhas do cenário
     glLineWidth(1)
     glColor3f(1,0,0)
+
+    #Celula com classe
+    """for x in test.ListaDeInteiros:
+        for z in x:
+            for i in z:
+                PA.set(linhas[i].x1, linhas[i].y1)
+                PB.set(linhas[i].x2, linhas[i].y2)
+                for a in z:
+                    PC.set(linhas[a].x1, linhas[a].y1)
+                    PD.set(linhas[a].x2, linhas[a].y2)
+                    ContChamadas += 1
+                    if HaInterseccao(PA, PB, PC, PD):
+                        ContadorInt += 1
+                        linhas[i].desenhaLinha()
+                        linhas[a].desenhaLinha()"""
     
-    for x in ListaFinal:
+    #Versão sem classe
+    """for x in ListaFinal:
         for y in x:
             for z in y:
                 PA.set(linhas[z].x1, linhas[z].y1)
@@ -240,7 +260,10 @@ def DesenhaCenario():
                         ContadorInt += 1
                         linhas[z].desenhaLinha()
                         linhas[a].desenhaLinha()
-    """   
+                        """
+
+        #Colisão com envelope
+    """
     for i in range(N_LINHAS):
         PA.set(linhas[i].x1, linhas[i].y1)
         PB.set(linhas[i].x2, linhas[i].y2)
@@ -254,7 +277,7 @@ def DesenhaCenario():
                     ContadorInt += 1
                     linhas[i].desenhaLinha()
                     linhas[j].desenhaLinha()
-"""
+        """
 # **********************************************************************
 # display()
 # Funcao que exibe os desenhos na tela

@@ -1,4 +1,3 @@
-
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -222,7 +221,7 @@ def DesenhaCenario():
     glColor3f(1,0,0)
 
     #Celula com classe
-    """for x in Cel.ListaDeInteiros:
+    for x in Cel.ListaDeInteiros:
         for z in x:
             for i in z:
                 PA.set(linhas[i].x1, linhas[i].y1)
@@ -234,7 +233,7 @@ def DesenhaCenario():
                     if HaInterseccao(PA, PB, PC, PD):
                         ContadorInt += 1
                         linhas[i].desenhaLinha()
-                        linhas[a].desenhaLinha()"""
+                        linhas[a].desenhaLinha()
     
     #Versão sem classe que fiz antes
     """for x in ListaFinal:

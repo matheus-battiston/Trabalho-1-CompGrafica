@@ -11,7 +11,7 @@ MAX_X = 100
 
 ContadorInt = 0
 ContChamadas = 0
-Subdivisoes = 20
+Subdivisoes = 10
 
 linhas = []
 Lista_Faixas_X = []
@@ -31,7 +31,7 @@ def init():
 
     for linha in linhas:
         linha.geraLinha(MAX_X, 10)
-    
+
     Cel.cadastraLinha(linhas)
     cria_subdivisão(Subdivisoes)
     
@@ -348,15 +348,22 @@ def keyboard(*args):
 
 def arrow_keys(a_keys: int, x: int, y: int):
     global Subdivisoes
+    global Cel
+    global linhas
+
     if a_keys == GLUT_KEY_UP:         # Se pressionar UP
         if Subdivisoes < 50:
-            Subdivisoes += 1
+            Subdivisoes = Subdivisoes + 1
+            Cel = Celula(Subdivisoes,MAX_X)
+            Cel.cadastraLinha(linhas)
             cria_subdivisão(Subdivisoes)
         else:
             pass
     if a_keys == GLUT_KEY_DOWN:       # Se pressionar DOWN
         if Subdivisoes > 2:
             Subdivisoes -= 1
+            Cel = Celula(Subdivisoes,MAX_X)
+            Cel.cadastraLinha(linhas)
             cria_subdivisão(Subdivisoes)
         else :
             pass

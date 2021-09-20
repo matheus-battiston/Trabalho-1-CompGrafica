@@ -21,7 +21,6 @@ class Celula:
 
         indice = 0
         tamanho_celula_x = self.tam_max/self.tamanho
-        print(tamanho_celula_x)
 
         for x in linha:
             minx = x.minx

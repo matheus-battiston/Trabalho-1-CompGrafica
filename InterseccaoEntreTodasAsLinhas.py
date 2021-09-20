@@ -6,7 +6,7 @@ from Linha import Linha
 from Celula import Celula
 import time
 
-N_LINHAS = 100
+N_LINHAS = 500
 MAX_X = 100
 
 ContadorInt = 0
@@ -30,7 +30,7 @@ def init():
     linhas = [Linha() for i in range(N_LINHAS)]
 
     for linha in linhas:
-        linha.geraLinha(MAX_X, 20)
+        linha.geraLinha(MAX_X, 10)
 
     Cel.cadastraLinha(linhas) #Cadastra as linhas nas celulas
     #cria_subdivisão(Subdivisoes)
@@ -120,6 +120,18 @@ def colisao_envelope(linha1,linha2):
 
     return True 
 
+def gera_candidatos(i):
+    candidatos = []
+    for x in range (0,N_LINHAS):
+        candidatos.append(False)
+    for x in range (0,len(Cel.ListaDeInteiros)):
+        for y in range (0,len(Cel.ListaDeInteiros[x])):
+            if i in Cel.ListaDeInteiros[x][y]:
+                for z in range (0,N_LINHAS):
+                    if z in Cel.ListaDeInteiros[x][y]:
+                        candidatos[z] = True
+    return candidatos
+
 
 def DesenhaCenario():
     global ContChamadas, ContadorInt
@@ -131,23 +143,23 @@ def DesenhaCenario():
     glLineWidth(1)
     glColor3f(1,0,0)
 
+    
     #Celula com classe
-    for x in Cel.ListaDeInteiros:
-        for z in x:
-            for i in z:
-                PA.set(linhas[i].x1, linhas[i].y1)
-                PB.set(linhas[i].x2, linhas[i].y2)
-                for a in z:
-                    PC.set(linhas[a].x1, linhas[a].y1)
-                    PD.set(linhas[a].x2, linhas[a].y2)
-                    ContChamadas += 1
-                    if HaInterseccao(PA, PB, PC, PD):
-                        ContadorInt += 1
-                        linhas[i].desenhaLinha()
-                        linhas[a].desenhaLinha()
-
-        #Colisão com envelope
+    for i in range (0,N_LINHAS):
+        PA.set(linhas[i].x1, linhas[i].y1)
+        PB.set(linhas[i].x2, linhas[i].y2)
+        candidatos = gera_candidatos(i)
+        for index, a in enumerate(candidatos):
+                    if(a == True):
+                        PC.set(linhas[index].x1, linhas[index].y1)
+                        PD.set(linhas[index].x2, linhas[index].y2)
+                        ContChamadas += 1
+                        if HaInterseccao(PA, PB, PC, PD):
+                            ContadorInt += 1
+                            linhas[i].desenhaLinha()
+                            linhas[a].desenhaLinha()
     """
+    #Colisão com envelope
     for i in range(N_LINHAS):
         PA.set(linhas[i].x1, linhas[i].y1)
         PB.set(linhas[i].x2, linhas[i].y2)
@@ -160,8 +172,7 @@ def DesenhaCenario():
                 if HaInterseccao(PA, PB, PC, PD):
                     ContadorInt += 1
                     linhas[i].desenhaLinha()
-                    linhas[j].desenhaLinha()
-        """
+                    linhas[j].desenhaLinha()"""
 # **********************************************************************
 # display()
 # Funcao que exibe os desenhos na tela

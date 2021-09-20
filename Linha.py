@@ -63,7 +63,4 @@ class Linha:
         glVertex2f(self.x1, self.y1)
         glVertex2f(self.x2, self.y2)
     
-
-
-
         glEnd()

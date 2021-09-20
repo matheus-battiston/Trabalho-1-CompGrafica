@@ -30,16 +30,17 @@ def init():
     linhas = [Linha() for i in range(N_LINHAS)]
 
     for linha in linhas:
-        linha.geraLinha(MAX_X, 10)
+        linha.geraLinha(MAX_X, 20)
 
-    Cel.cadastraLinha(linhas)
-    cria_subdivisão(Subdivisoes)
+    Cel.cadastraLinha(linhas) #Cadastra as linhas nas celulas
+    #cria_subdivisão(Subdivisoes)
     
 # **********************************************************************
 #  reshape( w: int, h: int )
 #  trata o redimensionamento da janela OpenGL
 #
 # **********************************************************************
+
 def reshape(w: int, h: int):
     # Reseta coordenadas do sistema antes the modificala
     glMatrixMode(GL_PROJECTION)
@@ -119,96 +120,6 @@ def colisao_envelope(linha1,linha2):
 
     return True 
 
-def cria_subdivisão(nro_divisoes):
-
-    global Lista_Faixas_X
-    global Lista_Faixas_Y
-    tamanho_faixas = MAX_X/nro_divisoes
-    Lista_Faixas_X = []
-    Lista_Faixas_Y = []
-    global ListaFinal
-    ListaFinal=[]
-
-
-    for x in range (0,nro_divisoes):
-        ListaFinal.append([])
-        for y in range (0,nro_divisoes):
-            ListaFinal[x].append([])
-            
-    for x in range (0,nro_divisoes):
-        Lista_Faixas_X.append([])
-    for x in range (0,nro_divisoes):
-        Lista_Faixas_Y.append([])
-#Faixa Vertical
-    
-    for x in range(0,len(linhas)):
-        minimo = linhas[x].miny
-        maximo = linhas[x].maxy
-
-        #Programa está gerando linhas fora do plano, isso garante que a estrutura ignore partes de fora
-        if linhas[x].miny < 0:
-            minimo = 0
-        if linhas[x].maxy > MAX_X:
-            maximo = MAX_X
-
-
-        faixa = int(minimo // tamanho_faixas)
-        #Garante que uma linha que va até o limite do plano nao seja colocada na faixa "de fora"
-        if faixa == nro_divisoes:
-            Lista_Faixas_Y[faixa-1].append(x)
-        else:
-            Lista_Faixas_Y[faixa].append(x)
-
-        faixa2 = int(maximo // tamanho_faixas)
-
-        if faixa2 != faixa and faixa2 == nro_divisoes:
-            Lista_Faixas_Y[faixa2-1].append(x)
-        elif faixa2 != faixa:
-            Lista_Faixas_Y[faixa2].append(x)
-
-        #Cobrir faixas intermediarias
-        if faixa2 - faixa > 1:
-            for z in range(faixa+1,faixa2):
-                Lista_Faixas_Y[z].append(x)
-    
-#Faixa Horizontal
-
-    for x in range(0,len(linhas)):
-        minimo = linhas[x].minx
-        maximo = linhas[x].maxx
-
-        #Programa está gerando linhas fora do plano, isso garante que a estrutura ignore partes de fora
-        if linhas[x].minx < 0:
-            minimo = 0
-        if linhas[x].maxx > MAX_X:
-            maximo = MAX_X
-
-
-        faixa = int(minimo // tamanho_faixas)
-        #Garante que uma linha que va até o limite do plano nao seja colocada na faixa "de fora"
-        if faixa == nro_divisoes:
-            Lista_Faixas_X[faixa-1].append(x)
-        else:
-            Lista_Faixas_X[faixa].append(x)
-
-        faixa2 = int(maximo // tamanho_faixas)
-
-        if faixa2 != faixa and faixa2 == nro_divisoes:
-            Lista_Faixas_X[faixa2-1].append(x)
-        elif faixa2 != faixa:
-            Lista_Faixas_X[faixa2].append(x)
-
-        #Cobrir faixas intermediarias
-        if faixa2 - faixa > 1:
-            for z in range(faixa+1,faixa2):
-                Lista_Faixas_X[z].append(x)
-
-    #Junta as duas faixas (horizontal e vertical), formando a final.
-    for x in range (0,nro_divisoes):
-        for y in range (0,nro_divisoes):
-            ListaFinal[x][y] = list(set(Lista_Faixas_X[x]) & set(Lista_Faixas_Y[y]))
-        
-
 
 def DesenhaCenario():
     global ContChamadas, ContadorInt
@@ -234,22 +145,6 @@ def DesenhaCenario():
                         ContadorInt += 1
                         linhas[i].desenhaLinha()
                         linhas[a].desenhaLinha()
-    
-    #Versão sem classe que fiz antes
-    """for x in ListaFinal:
-        for y in x:
-            for z in y:
-                PA.set(linhas[z].x1, linhas[z].y1)
-                PB.set(linhas[z].x2, linhas[z].y2)
-                for a in y:
-                    PC.set(linhas[a].x1, linhas[a].y1)
-                    PD.set(linhas[a].x2, linhas[a].y2)
-                    ContChamadas += 1
-                    if HaInterseccao(PA, PB, PC, PD):
-                        ContadorInt += 1
-                        linhas[z].desenhaLinha()
-                        linhas[a].desenhaLinha()
-                        """
 
         #Colisão com envelope
     """
@@ -356,7 +251,6 @@ def arrow_keys(a_keys: int, x: int, y: int):
             Subdivisoes = Subdivisoes + 1
             Cel = Celula(Subdivisoes,MAX_X)
             Cel.cadastraLinha(linhas)
-            cria_subdivisão(Subdivisoes)
         else:
             pass
     if a_keys == GLUT_KEY_DOWN:       # Se pressionar DOWN
@@ -364,7 +258,6 @@ def arrow_keys(a_keys: int, x: int, y: int):
             Subdivisoes -= 1
             Cel = Celula(Subdivisoes,MAX_X)
             Cel.cadastraLinha(linhas)
-            cria_subdivisão(Subdivisoes)
         else :
             pass
     if a_keys == GLUT_KEY_LEFT:       # Se pressionar LEFT

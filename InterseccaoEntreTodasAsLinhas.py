@@ -6,9 +6,8 @@ from Linha import Linha
 from Celula import Celula
 import time
 
-N_LINHAS = 500
 MAX_X = 100
-
+N_LINHAS= 5000
 ContadorInt = 0
 ContChamadas = 0
 Subdivisoes = 10
@@ -18,6 +17,44 @@ Lista_Faixas_X = []
 Lista_Faixas_Y = []
 ListaFinal = []
 Cel = Celula(Subdivisoes,MAX_X)
+
+def GeraCasoDeTeste_1():
+
+    global linhas
+
+    global N_LINHAS
+
+    nPares = 10 # Nro de pares linhas com interseccao
+
+    deltaX = MAX_X/(nPares+1.0) # distância entre os pares
+
+    deltaY = deltaX
+
+    # calcula o nro de retas que serão geradas a serem armazenadas
+
+    N_LINHAS = nPares*nPares * 2
+
+    
+    cont=0
+
+    tamRetas = 1.0 # Define o tamanho das retas
+
+    for x in range(1, nPares+1):
+
+        x1 = x*deltaX
+
+        for y in range(1,nPares+1):
+
+            y1 = y*deltaY
+            # gera uma linha que desce, da esq para dir
+            linhas[cont].geraLinha(x1-tamRetas,y1+tamRetas, x1+tamRetas, y1-tamRetas)
+
+            cont = cont + 1
+            # gera uma linha que sobe, da esq para dir
+
+            linhas[cont].geraLinha(x1-tamRetas,y1-tamRetas, x1+tamRetas, y1+tamRetas)
+
+            cont = cont + 1
 
 def init():
     global linhas
@@ -29,8 +66,10 @@ def init():
     
     linhas = [Linha() for i in range(N_LINHAS)]
 
-    for linha in linhas:
-        linha.geraLinha(MAX_X, 10)
+    # for linha in linhas:
+    #     linha.geraLinha(MAX_X, 10)
+
+    GeraCasoDeTeste_1()
 
     Cel.cadastraLinha(linhas) #Cadastra as linhas nas celulas
     #cria_subdivisão(Subdivisoes)
@@ -144,7 +183,7 @@ def celula():
                         linhas[i].desenhaLinha()
                         linhas[a].desenhaLinha()
 
-def colisao_envelope():
+def colisao_env():
     global ContChamadas,ContadorInt
     PA, PB, PC, PD = Ponto(), Ponto(), Ponto(), Ponto()
     ContChamadas, ContadorInt = 0, 0
@@ -152,14 +191,14 @@ def colisao_envelope():
     for i in range(N_LINHAS):
         PA.set(linhas[i].x1, linhas[i].y1)
         PB.set(linhas[i].x2, linhas[i].y2)
-        for j in range(N_LINHAS):
+        for j in range(i+1,N_LINHAS):
             PC.set(linhas[j].x1, linhas[j].y1)
             PD.set(linhas[j].x2, linhas[j].y2)
 
             if colisao_envelope(linhas[i],linhas[j]):
                 ContChamadas += 1
                 if HaInterseccao(PA, PB, PC, PD):
-                    ContadorInt += 1
+                    ContadorInt += 2 #(Colocamos +2 para nao prejudicar o contador de intersecções original que tinha sido pensado testando 2 vezes as linhas)
                     linhas[i].desenhaLinha()
                     linhas[j].desenhaLinha()
 
@@ -174,7 +213,7 @@ def DesenhaCenario():
     glColor3f(1,0,0)
 
     celula()
-    #colisao_envelope()
+    colisao_env()
 
 
 # **********************************************************************
